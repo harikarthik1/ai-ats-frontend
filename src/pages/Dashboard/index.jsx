@@ -21,7 +21,7 @@ function Dashboard() {
       setAnalysisCount(history.data.length);
 
       if (history.data.length > 0) {
-        setLatestScore(history.data[0].finalScore);
+        setLatestScore(history.data[history.data.length - 1].finalScore);
       }
     } catch (err) {
       console.error("Dashboard data failed");
