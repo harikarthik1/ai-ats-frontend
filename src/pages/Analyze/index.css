@@ -1,0 +1,95 @@
+.analyze-container {
+  padding: 40px;
+  background-color: #0f172a;
+  min-height: 100vh;
+  color: white;
+}
+
+.analyze-container h1 {
+  color: #38bdf8;
+  margin-bottom: 30px;
+}
+
+.analyze-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.analyze-form select,
+.analyze-form textarea {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1e293b;
+  color: white;
+}
+
+.analyze-form textarea {
+  min-height: 150px;
+}
+
+.analyze-form button {
+  padding: 12px;
+  background-color: #38bdf8;
+  border: none;
+  border-radius: 6px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.analyze-form button:hover {
+  background-color: #0ea5e9;
+}
+
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.score-box {
+  background: rgba(30, 41, 59, 0.8);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.score-box p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+.result-card {
+  background: rgba(30, 41, 59, 0.8);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.green {
+  background-color: #16a34a;
+}
+
+.red {
+  background-color: #dc2626;
+}
+.dashboard-container,
+.upload-container,
+.analyze-container {
+  padding: 40px 60px;
+}
