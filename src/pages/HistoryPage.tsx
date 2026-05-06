@@ -9,6 +9,7 @@ interface HistoryItem {
   summary: string;
   finalScore: number;
   semanticScore: number;
+  jobDescription: string;
 }
 
 export default function HistoryPage() {
@@ -29,7 +30,8 @@ export default function HistoryPage() {
         resumeName: item.resumeFileName,
         summary: item.summary,
         finalScore: item.finalScore,
-        semanticScore: item.semanticScore
+        semanticScore: item.semanticScore,
+        jobDescription: item.jobDescription
       })));
     } catch {
       setError('Failed to load history. Please try again.');
@@ -155,6 +157,12 @@ export default function HistoryPage() {
                       <p className={`text-xl font-bold mt-1 ${getScoreColor(item.semanticScore)}`}>{item.semanticScore}%</p>
                     </div>
                   </div>
+                  {item.jobDescription && (
+                    <div>
+                      <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Job Description</p>
+                      <p className="text-sm text-slate-600 leading-relaxed max-h-32 overflow-y-auto bg-white p-3 rounded border border-slate-200">{item.jobDescription}</p>
+                    </div>
+                  )}
                   {item.summary && (
                     <div>
                       <p className="text-xs font-semibold text-slate-500 uppercase mb-2">AI Suggestions</p>
