@@ -7,6 +7,8 @@ interface HistoryItem {
   date: string;
   resumeName: string;
   summary: string;
+  finalScore: number;
+  semanticScore: number;
 }
 
 export default function HistoryPage() {
@@ -25,7 +27,9 @@ export default function HistoryPage() {
         id: item.id,
         date: item.analyzedAt,
         resumeName: item.resumeFileName,
-        summary: item.summary
+        summary: item.summary,
+        finalScore: item.finalScore,
+        semanticScore: item.semanticScore
       })));
     } catch {
       setError('Failed to load history. Please try again.');
@@ -50,10 +54,16 @@ export default function HistoryPage() {
     }
   };
 
-  const toggle = (id: string) => setExpanded((prev) => (prev === id ? null : id));
+  const toggle = (id: number) => setExpanded((prev) => (prev === id ? null : id));
 
   const fmt = (iso: string) =>
     new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+  const getScoreColor = (score: number) => {
+    if (score >= 75) return 'text-green-600';
+    if (score >= 50) return 'text-amber-600';
+    return 'text-red-600';
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
@@ -109,27 +119,48 @@ export default function HistoryPage() {
                   <p className="font-medium text-slate-800 truncate">{item.resumeName}</p>
                   <p className="text-xs text-slate-400 mt-0.5">{fmt(item.date)}</p>
                 </div>
-                <div className="flex items-center gap-2 ml-2">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
-                    disabled={deleting === item.id}
-                    className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors"
-                    title="Delete"
-                  >
-                    {deleting === item.id
-                      ? <Loader2 size={15} className="animate-spin" />
-                      : <Trash2 size={15} />}
-                  </button>
-                  {expanded === item.id
-                    ? <ChevronUp size={16} className="text-slate-400" />
-                    : <ChevronDown size={16} className="text-slate-400" />}
+                <div className="flex items-center gap-3 ml-2">
+                  <div className="text-right">
+                    <p className={`font-bold text-lg ${getScoreColor(item.finalScore)}`}>{item.finalScore}%</p>
+                    <p className="text-xs text-slate-400">ATS Score</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                      disabled={deleting === item.id}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      title="Delete"
+                    >
+                      {deleting === item.id
+                        ? <Loader2 size={15} className="animate-spin" />
+                        : <Trash2 size={15} />}
+                    </button>
+                    {expanded === item.id
+                      ? <ChevronUp size={16} className="text-slate-400" />
+                      : <ChevronDown size={16} className="text-slate-400" />}
+                  </div>
                 </div>
               </div>
 
               {/* Expanded detail */}
               {expanded === item.id && (
-                <div className="border-t border-slate-100 px-5 py-4 bg-slate-50">
-                  <p className="text-sm text-slate-600 leading-relaxed">{item.summary || 'No summary available.'}</p>
+                <div className="border-t border-slate-100 px-5 py-4 bg-slate-50 space-y-3">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs font-semibold text-slate-500 uppercase">Final Score</p>
+                      <p className={`text-xl font-bold mt-1 ${getScoreColor(item.finalScore)}`}>{item.finalScore}%</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-slate-500 uppercase">Semantic Match</p>
+                      <p className={`text-xl font-bold mt-1 ${getScoreColor(item.semanticScore)}`}>{item.semanticScore}%</p>
+                    </div>
+                  </div>
+                  {item.summary && (
+                    <div>
+                      <p className="text-xs font-semibold text-slate-500 uppercase mb-2">AI Suggestions</p>
+                      <p className="text-sm text-slate-600 leading-relaxed">{item.summary}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
