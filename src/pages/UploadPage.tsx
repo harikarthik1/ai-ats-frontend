@@ -14,6 +14,7 @@ export default function UploadPage() {
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState<Stage>('idle');
   const [error, setError] = useState('');
+  const [jobDescription, setJobDescription] = useState('');
 
   const accept = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
   const acceptExt = ['.pdf', '.docx'];
@@ -43,13 +44,17 @@ export default function UploadPage() {
 
   const handleAnalyze = async () => {
     if (!file) return;
+    if (!jobDescription.trim()) {
+      setError('Please provide a job description.');
+      return;
+    }
     setError('');
     setStage('uploading');
     setProgress(0);
     try {
       const { data: uploadData } = await resumeApi.upload(file, setProgress);
       setStage('analyzing');
-      const { data: analysisData } = await analysisApi.analyze(uploadData.resumeId);
+      const { data: analysisData } = await analysisApi.analyze(uploadData.resumeId, jobDescription);
       setStage('done');
       setTimeout(() => navigate(`/results/${analysisData.analysisId}`, { state: { results: { skills: analysisData.skills, score: analysisData.score, recommendations: analysisData.recommendations }, resumeName: file.name } }), 600);
     } catch (err: unknown) {
@@ -123,6 +128,22 @@ export default function UploadPage() {
         )}
       </div>
 
+      {/* Job Description Input */}
+      <div className="mt-6">
+        <label htmlFor="jobDescription" className="block text-sm font-medium text-slate-700 mb-2">
+          Job Description
+        </label>
+        <textarea
+          id="jobDescription"
+          value={jobDescription}
+          onChange={(e) => setJobDescription(e.target.value)}
+          placeholder="Paste the job description here to analyze your resume against it..."
+          rows={6}
+          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 resize-none"
+          disabled={busy}
+        />
+      </div>
+
       {/* Progress bar */}
       {busy && (
         <div className="mt-5">
@@ -158,7 +179,7 @@ export default function UploadPage() {
       {/* Action button */}
       <button
         onClick={handleAnalyze}
-        disabled={!file || busy || stage === 'done'}
+        disabled={!file || !jobDescription.trim() || busy || stage === 'done'}
         className="mt-6 w-full flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
       >
         {busy && <Loader2 size={16} className="animate-spin" />}

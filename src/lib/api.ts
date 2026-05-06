@@ -43,13 +43,13 @@ export const resumeApi = {
 };
 
 export const analysisApi = {
-  analyze: (resumeId: number) =>
+  analyze: (resumeId: number, jobDescription: string) =>
     api.post<{
       analysisId: number;
       score: number;
       skills: string[];
       recommendations: string[];
-    }>('/api/analysis/analyze', { resumeId }),
+    }>('/api/analysis/analyze', { resumeId, jobDescription }),
   history: () => api.get('/api/analysis/my-history'),
   deleteOne: (id: number) => api.delete(`/api/analysis/${id}`),
 };
